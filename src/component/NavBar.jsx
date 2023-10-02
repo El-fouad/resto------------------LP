@@ -32,7 +32,7 @@ function NavBar() {
           </NavLink>
         </ul>
         <div className="flex-1 text-end">
-          <button className=" text-end bg-gray-dark px-4 py-2 text-white rounded-lg">
+          <button className=" text-end bg-gray-dark px-2 py-1 text-white rounded-lg">
             Download App
           </button>
         </div>
