@@ -1,35 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { addDoc, collection } from "@firebase/firestore";
+import { addDoc, collection , query, orderBy} from "@firebase/firestore";
 import { firestore } from "../frebase";
 import { getDocs, doc, onSnapshot } from "firebase/firestore";
 function Blog() {
-  const [res, setRes] = useState([]);
-  const ref = collection(firestore, "contacts");
+  const [res, setRes] = useState({});
   //   send message
   const [Message, setMessage] = useState("");
+  const [user, setUser] = useState("");
+
+  const ref = collection(firestore, "contacts");
+  const refSort = query(collection(firestore, "contacts"), orderBy("date"));;
+
   const submithandler = (e) => {
     e.preventDefault();
 
     let data = {
-      user: "F",
+      date: new Date(),
+      user: user,
       message: Message,
     };
     try {
       addDoc(ref, data);
-      console.log("added");
+      console.log("sent");
     } catch (err) {
       console.log(err);
     }
     setMessage("");
+    setUser("");
   };
   // get messages
   const getMessages = async () =>
-    onSnapshot(ref, (doc) => {
-      const urls = [];
-      doc.forEach((doc) => {
-        urls.push(doc.data());
-      });
-      setRes(urls);
+    onSnapshot(refSort, (doc) => {
+        setRes(doc.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
     });
 
   useEffect(() => {
@@ -39,22 +41,29 @@ function Blog() {
   return (
     <>
       <div className=" flex justify-center items-start w-screen mt-10 h-screen">
-      <div className=" flex-[0.2] flex w-full justify-center">
-        <div className=" h-8 w-8 rounded-full bg-gray ">F</div>
-      </div>
+        <input
+          type="text"
+          placeholder="your name ..."
+          value={user}
+          onChange={(e) => setUser(e.target.value)}
+        />
+        <div className=" flex-[0.2] flex w-full justify-center">
+          <div className=" h-8 w-8 rounded-full bg-gray ">F</div>
+        </div>
         <div className="flex flex-col w-80 h-96 ">
           <div className=" flex-[0.8]  bg-purple px-1 py-2 overflow-auto rounded-lg">
             {/* pers 1 */}
             {res[0]
-              ? res.map((m) => (
+              ? res.map((m,i) => (
                   <div
+                  key={i}
                     className={` flex ${
-                      m.user === "F" ? "flex-row" : " flex-row-reverse"
+                      m.user === "F" ?  " flex-row-reverse":"flex-row" 
                     }  justify-end w-full  p-2`}
                   >
                     <div
                       className={` w-[80%] h-full ${
-                        m.user === "F" ? "bg-gray" : "bg-green"
+                        m.user === "F" ? "bg-green":"bg-gray" 
                       } p-2  rounded-md`}
                     >
                       <p>{m.message} </p>
