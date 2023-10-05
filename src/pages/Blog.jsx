@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { addDoc, collection , query, orderBy} from "@firebase/firestore";
+import { addDoc, collection, query, orderBy } from "@firebase/firestore";
 import { firestore } from "../frebase";
 import { getDocs, doc, onSnapshot } from "firebase/firestore";
 function Blog() {
@@ -9,7 +9,10 @@ function Blog() {
   const [user, setUser] = useState("");
 
   const ref = collection(firestore, "contacts");
-  const refSort = query(collection(firestore, "contacts"), orderBy("date"));;
+  const refSort = query(
+    collection(firestore, "contacts"),
+    orderBy("date", "desc")
+  );
 
   const submithandler = (e) => {
     e.preventDefault();
@@ -31,7 +34,7 @@ function Blog() {
   // get messages
   const getMessages = async () =>
     onSnapshot(refSort, (doc) => {
-        setRes(doc.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+      setRes(doc.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     });
 
   useEffect(() => {
@@ -51,20 +54,20 @@ function Blog() {
           <div className=" h-8 w-8 rounded-full bg-gray ">F</div>
         </div>
         <div className="flex flex-col w-80 h-96 ">
-          <div className=" flex-[0.8]  bg-purple px-1 py-2 overflow-auto rounded-lg">
+          <div className=" flex-[0.8] flex bg-purple px-1 py-2 overflow-auto flex-col-reverse scroll-smooth rounded-lg">
             {/* pers 1 */}
             {res[0]
-              ? res.map((m,i) => (
+              ? res.map((m, i) => (
                   <div
-                  key={i}
-                    className={` flex ${
-                      m.user === "F" ?  " flex-row-reverse":"flex-row" 
+                    key={i}
+                    className={` flex  ${
+                      m.user === "F" ? " flex-row-reverse" : "flex-row"
                     }  justify-end w-full  p-2`}
                   >
                     <div
                       className={` w-[80%] h-full ${
-                        m.user === "F" ? "bg-green":"bg-gray" 
-                      } p-2  rounded-md`}
+                        m.user === "F" ? "bg-green" : "bg-gray"
+                      }p-2 rounded-md`}
                     >
                       <p>{m.message} </p>
                     </div>
