@@ -7,6 +7,7 @@ function Chat() {
   //   send message
   const [Message, setMessage] = useState("");
   const [user, setUser] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
 
   const ref = collection(firestore, "contacts");
   const refSort = query(
@@ -29,7 +30,6 @@ function Chat() {
       console.log(err);
     }
     setMessage("");
-    setUser("");
   };
   // get messages
   const getMessages = async () =>
@@ -39,8 +39,9 @@ function Chat() {
 
   useEffect(() => {
     getMessages();
-  }, []);
-  console.log(res);
+    console.log(isTyping);
+  }, [isTyping]);
+  // console.log(res);
   return (
     <>
       <div className=" flex justify-center items-start w-screen mt-10 h-screen">
@@ -48,7 +49,7 @@ function Chat() {
           type="text"
           placeholder="your name ..."
           value={user}
-          onChange={(e) => setUser(e.target.value)}
+          onChange={() => setUser(e.target.value)}
         />
         <div className=" flex-[0.2] flex w-full justify-center">
           <div className=" h-8 w-8 rounded-full bg-gray ">F</div>
@@ -89,6 +90,8 @@ function Chat() {
                 onChange={(e) => setMessage(e.target.value)}
                 value={Message}
                 className=" h-full w-full rounded-lg px-2"
+                onFocus={()=>setIsTyping(true)}
+                onBlur={()=>setIsTyping(false)}
               />
             </div>
             <div className=" flex-[0.2]">
@@ -105,57 +108,3 @@ function Chat() {
 
 export default Chat;
 
-// to add
-// import { useRef, useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import './App.css'
-// import { addDoc, collection } from "@firebase/firestore"
-// import { firestore } from "./firebase"
-// function App() {
-//   const [count, setCount] = useState('')
-//   const submithandler = (e) => {
-//     e.preventDefault()
-//     const ref = collection(firestore, "contacts") // Firebase creates this automatically
-
-//     let data = {
-//         firsName: count
-//     }
-//     console.log(data);
-//     try {
-//         addDoc(ref, data)
-//         console.log("added");
-//     } catch(err) {
-//         console.log(err)
-//     }
-//     setCount("")
-//   }
-
-//   return (
-//     <div className="App">
-//       <form onSubmit={submithandler}>
-//         <input type= "text" value={count} onChange={(e)=>setCount(e.target.value)} />
-//         <button type = "submit">Save</button>
-//       </form>
-//     </div>
-//   );
-// }
-
-// export default App
-
-//   doc_refs.forEach(country => {
-//     res.push({
-//         id: country.id,
-//         ...country.data()
-//     })
-// })
-// const fetchPost = async () => {
-
-//     await getDocs(ref)
-//         .then((querySnapshot)=>{
-//             const newData = querySnapshot.docs
-//                 .map((doc) => ({...doc.data(), id:doc.id }));
-//             setTodos(newData);
-//             console.log(todos, newData);
-//         })
-// }
